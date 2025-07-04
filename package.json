@@ -9,19 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/runtime": "^7.27.6",
     "axios": "^1.9.0",
     "bcryptjs": "^3.0.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.2",
-    "next": "15.3.3",
+    "next": "^15.3.5",
     "nodemailer": "^7.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.5.2"
+    "react-hot-toast": "^2.5.2",
+    "regenerate-unicode-properties": "^10.2.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
