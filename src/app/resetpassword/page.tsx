@@ -10,14 +10,24 @@ export default function resetPasswordPage() {
     const [token, setToken] = useState("");
     const [error, setError] = useState(false);
     const [password, setPassword] = useState("");
+    const [userBoolean, setUserBoolean] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const verifyUserEmail = async () =>{
+    const onPassReset = async () =>{
         try {
-            const resMess = await axios.post('/api/users/verifyemail', {token})
+            setButtonDisabled(true);
+            setLoading(true);
+            const resMess = await axios.post('/api/users/resetpassword', {token, password})
+            //Kal karenge
             console.log(resMess);
+            setUserBoolean(resMess.data.success)
         } catch (error:any) {
             setError(true);
             console.log(error.response.data);
+        } finally {
+            setButtonDisabled(false);
+            setLoading(false);
         }
     }
 
@@ -26,14 +36,15 @@ export default function resetPasswordPage() {
         setToken(urlToken || "");
     }, []);
 
-    useEffect(()=>{
-        if(token.length>0){
-            verifyUserEmail();
-        }
-    }, [token])
+    //verify everything on button click instead of a useEffect hook
 
-    const [buttonDisabled, setButtonDisabled] = useState(false);
-    const [loading, setLoading] = useState(false);
+    useEffect(()=> {
+            if(password.length > 0){
+                setButtonDisabled(false);
+            } else {
+                setButtonDisabled(true)
+            }
+        }, [password]);
     
     return(
         <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -49,7 +60,7 @@ export default function resetPasswordPage() {
                 placeholder="New Password"
             />
             <button
-            // onClick={}
+            onClick={onPassReset}
             ></button>
         </div>
     )
