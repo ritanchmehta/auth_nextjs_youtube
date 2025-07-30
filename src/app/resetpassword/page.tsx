@@ -19,7 +19,7 @@ export default function resetPasswordPage() {
             setButtonDisabled(true);
             setLoading(true);
             const resMess = await axios.post('/api/users/resetpassword', {token, password})
-            //Kal karenge
+            //aajkarenge
             console.log(resMess);
             setUserBoolean(resMess.data.success)
         } catch (error:any) {
