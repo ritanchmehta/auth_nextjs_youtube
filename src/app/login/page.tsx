@@ -13,9 +13,11 @@ export default function LoginPage() {
   });
 
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const onLogin = async () => {
     try {
+      setLoading(true);
       await toast.promise(
         // 1. The promise to resolve
         axios.post("/api/users/login", user),
@@ -37,6 +39,8 @@ export default function LoginPage() {
       );
     } catch (error: any) {
       console.log("Login failed", error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,9 +76,10 @@ export default function LoginPage() {
       />
       <button
         onClick={onLogin}
+        disabled={buttonDisabled || loading}
         className="p-2 border border-gray-300 rounded-lg mb-4 focus: outline-none focus:border-gray-600"
       >
-        {buttonDisabled ? "Fill all fields" : "login Here"}
+        { loading ? "Logging In..." : buttonDisabled ? "Fill all fields" : "login Here"}
       </button>
       <Link href="/signup">Visit signup page</Link>
       <Link href="/forgotpassword">Forgot Password?</Link>
