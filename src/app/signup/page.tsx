@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, {useEffect} from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import {toast} from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 
 export default function SignupPage() {
     const router = useRouter();
@@ -19,14 +19,23 @@ export default function SignupPage() {
     const onSignup = async() => {
         try{
             setLoading(true);
-            const response = await axios.post("/api/users/signup", user);
-            console.log("SignUp success", response.data);
-            router.push("/login");
-            
+            await toast.promise(
+                axios.post("/api/users/signup", user),
+                {
+                    loading: "Signing up...",
+                    success: (response) => {
+                    console.log("SignUp success", response.data);
+                    router.push("/login");
+                    return <b>SignUp successful! Welcome.</b>;
+                    },
+                    error: (err) => {
+                    console.error("Login failed:", err);
+                    return <b>SignUp failed</b>;
+                    }
+                }
+            );
         } catch(error: any){
             console.log("Signup failed", error.message);
-            
-            toast.error(error.message)
         } finally {
             setLoading(false)
         }
@@ -73,8 +82,10 @@ export default function SignupPage() {
              />
              <button 
              onClick={onSignup}
-             className="p-2 border border-gray-300 rounded-lg mb-4 focus: outline-none focus:border-gray-600">{buttonDisabled ? "No SignUp": "SignUp"}</button>
+             disabled={buttonDisabled || loading}
+             className="p-2 border border-gray-300 rounded-lg mb-4 focus: outline-none focus:border-gray-600">{ loading ? "Signing Up": buttonDisabled ? "Fill all fields": "SignUp"}</button>
              <Link href='/login'>Visit login</Link>
+             <Toaster position="bottom-center" />
         </div>
     )
 }

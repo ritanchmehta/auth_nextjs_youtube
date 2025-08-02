@@ -2,7 +2,8 @@
 
 import axios from "axios";
 import Link from "next/link";
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
+import toast, {Toaster} from "react-hot-toast";
 
 export default function VerifyEmailPage() {
 
@@ -12,10 +13,21 @@ export default function VerifyEmailPage() {
 
     const verifyUserEmail = async () =>{
         try {
-            const resMess = await axios.post('/api/users/verifyemail', {token})
-            console.log(resMess);
-            
-            setVerified(true);
+            await toast.promise(
+                axios.post('/api/users/verifyemail', {token}),
+                {
+                    loading: "Verifying Email",
+                    success: (response) => {
+                        console.log("Verification successful", response);
+                        setVerified(true);
+                        return <b>Verification successful!</b>;
+                    },
+                    error: (err) => {
+                        console.error("Login failed:", err);
+                        return <b>Verification failed</b>;
+                    }
+                }
+            );
         } catch (error:any) {
             setError(true);
             console.log(error.response.data);
@@ -49,7 +61,7 @@ export default function VerifyEmailPage() {
                     <h2 className="text-2xl bg-red-500">Error</h2>
                 </div>
             )}
-
+            <Toaster position="bottom-center" />
         </div>
     )
 }

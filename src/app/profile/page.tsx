@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import Link from "next/link";
-import toast from "react-hot-toast";
+import toast, {Toaster} from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -22,9 +22,25 @@ export default function ProfilePage(){
     }
 
     const getUserDetails = async ()=> {
-        const res = await axios.get('/api/users/me')
-        console.log(res.data)
-        setData(res.data.data._id)
+        try{
+        await toast.promise(
+            axios.get('/api/users/me'),
+            {
+                loading: "Fetching Information...",
+                success: (response) => {
+                    console.log(response.data)
+                    setData(response.data.data._id)
+                    return <b>Fetched Successful!</b>
+                },
+                error: (err) => {
+                console.error(err);
+                return err?.response?.data?.error || "Failed to fetch user info";
+                }
+            }
+        );
+        } catch(error: any){
+            console.log(error.message);
+        }
     }
     return (
         <div className="flex flex-col items-center justify-center min-h-screen py-2">
@@ -43,6 +59,7 @@ export default function ProfilePage(){
             className="bg-green-500 hover:bg-blue-700 text-white font-bold mt-4 py-2 px-4 rounded"> 
                 Get User Details
             </button>
+        <Toaster position="bottom-center" />    
         </div>
     )
 }
